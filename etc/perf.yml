@@ -40,15 +40,6 @@ functions:
           git checkout evergreen
     - command: shell.exec
       params:
-        working_dir: src
-        script: |
-          set -v
-          set -e
-          curl -s ${mongo_url} --output mongodb.tgz
-          ${decompress} mongodb.tgz
-          mv mongodb-*/bin/* .
-    - command: shell.exec
-      params:
         background: true
         working_dir: src
         script: |
@@ -114,18 +105,24 @@ tasks:
         display_name: mongo
 
 - name: query
+  depends_on:
+  - name: compile
   commands:
     - func: "setup standalone"
     - func: "run perf tests"
       vars:
         filter: "query"
 - name: update
+  depends_on:
+  - name: compile
   commands:
     - func: "setup standalone"
     - func: "run perf tests"
       vars:
         filter: "update"
 - name: insert
+  depends_on:
+  - name: compile
   commands:
     - func: "setup standalone"
     - func: "run perf tests"
