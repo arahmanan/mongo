@@ -17,14 +17,14 @@ functions:
       params:
         aws_key: ${aws_key}
         aws_secret: ${aws_secret}
-        remote_file: perf/${build_variant}/${revision}/artifacts/mongod-${build_id}
+        remote_file: perf/${build_variant}/${revision}/mongod-${build_id}
         bucket: mciuploads
         local_file: src/mongod
     - command: s3.get
       params:
         aws_key: ${aws_key}
         aws_secret: ${aws_secret}
-        remote_file: perf/${build_variant}/${revision}/artifacts/mongo-${build_id}
+        remote_file: perf/${build_variant}/${revision}/mongo-${build_id}
         bucket: mciuploads
         local_file: src/mongo
     - command: shell.exec
@@ -88,7 +88,7 @@ tasks:
         aws_key: ${aws_key}
         aws_secret: ${aws_secret}
         local_file: src/mongod
-        remote_file: perf/${build_variant}/${revision}/sources/mongod-${build_id}
+        remote_file: perf/${build_variant}/${revision}/mongod-${build_id}
         bucket: mciuploads
         permissions: public-read
         content_type: ${content_type|application/octet-stream}
@@ -98,7 +98,7 @@ tasks:
         aws_key: ${aws_key}
         aws_secret: ${aws_secret}
         local_file: src/mongo
-        remote_file: perf/${build_variant}/${revision}/sources/mongo-${build_id}
+        remote_file: perf/${build_variant}/${revision}/mongo-${build_id}
         bucket: mciuploads
         permissions: public-read
         content_type: ${content_type|application/octet-stream}
