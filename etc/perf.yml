@@ -19,20 +19,20 @@ functions:
         aws_secret: ${aws_secret}
         remote_file: perf/${build_variant}/${revision}/artifacts/mongod-${build_id}
         bucket: mciuploads
+        local_file: src/mongod
     - command: s3.get
       params:
         aws_key: ${aws_key}
         aws_secret: ${aws_secret}
         remote_file: perf/${build_variant}/${revision}/artifacts/mongo-${build_id}
         bucket: mciuploads
+        local_file: src/mongo
     - command: shell.exec
       params:
         working_dir: src
         script: |
           set -e 
           set -v
-          mv ../mongod .
-          mv ../mongo .
           git clone https://github.com/mongodb/mongo-perf perf
           pwd 
           ls
