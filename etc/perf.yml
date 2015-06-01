@@ -33,6 +33,8 @@ functions:
         script: |
           set -e 
           set -v
+          chmod +x mongod
+          chmod +x mongo
           git clone https://github.com/mongodb/mongo-perf perf
           pwd 
           ls
