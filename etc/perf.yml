@@ -113,7 +113,7 @@ tasks:
     - func: "setup standalone"
     - func: "run perf tests"
       vars:
-        filter: "query"
+        filter: "core-query"
 - name: update
   depends_on:
   - name: compile
@@ -121,7 +121,7 @@ tasks:
     - func: "setup standalone"
     - func: "run perf tests"
       vars:
-        filter: "update"
+        filter: "core-update"
 - name: insert
   depends_on:
   - name: compile
@@ -129,7 +129,7 @@ tasks:
     - func: "setup standalone"
     - func: "run perf tests"
       vars:
-        filter: "insert"
+        filter: "core-insert"
 
 buildvariants:
 - name: linux-wt-standalone
