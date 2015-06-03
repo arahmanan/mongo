@@ -140,7 +140,7 @@ buildvariants:
     compile_flags: -j$(grep -c ^processor /proc/cpuinfo) CC=/opt/mongodbtoolchain/bin/gcc CXX=/opt/mongodbtoolchain/bin/g++ --release --variant-dir="linux2/release"
 
   run_on:
-  - "centos6-perf"
+  - "ubuntu1404-test"
   tasks:
   - name: compile
     distros:
