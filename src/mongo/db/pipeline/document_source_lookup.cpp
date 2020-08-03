@@ -45,6 +45,18 @@
 #include "mongo/platform/overflow_arithmetic.h"
 #include "mongo/util/fail_point.h"
 
+namespace {
+// TODO AR: remove
+void writeUint8(uint8_t num) {
+    std::cout.write(reinterpret_cast<char*>(&num), sizeof num);
+}
+void writeString(const std::string str) {
+    auto size = str.size();
+    std::cout.write(reinterpret_cast<char*>(&size), sizeof size);
+    std::cout << str;
+}
+}  // namespace
+
 namespace mongo {
 
 using boost::intrusive_ptr;
@@ -278,6 +290,7 @@ DocumentSource::GetNextResult DocumentSourceLookUp::doGetNext() {
         _resolvedPipeline.back() = matchStage;
     }
 
+    writeUint8(34);
     auto pipeline = buildPipeline(inputDoc);
 
     std::vector<Value> results;
@@ -305,6 +318,7 @@ DocumentSource::GetNextResult DocumentSourceLookUp::doGetNext() {
 
 std::unique_ptr<Pipeline, PipelineDeleter> DocumentSourceLookUp::buildPipeline(
     const Document& inputDoc) {
+    writeUint8(35);
     // Copy all 'let' variables into the foreign pipeline's expression context.
     copyVariablesToExpCtx(_variables, _variablesParseState, _fromExpCtx.get());
 
@@ -315,6 +329,7 @@ std::unique_ptr<Pipeline, PipelineDeleter> DocumentSourceLookUp::buildPipeline(
 
     // If we don't have a cache, build and return the pipeline immediately.
     if (!_cache || _cache->isAbandoned()) {
+        writeUint8(31);
         MakePipelineOptions pipelineOpts;
         pipelineOpts.optimize = true;
         pipelineOpts.attachCursorSource = true;
@@ -323,6 +338,7 @@ std::unique_ptr<Pipeline, PipelineDeleter> DocumentSourceLookUp::buildPipeline(
         pipelineOpts.allowTargetingShards = internalQueryAllowShardedLookup.load();
         return Pipeline::makePipeline(_resolvedPipeline, _fromExpCtx, pipelineOpts);
     }
+    writeUint8(32);
 
     // Construct the basic pipeline without a cache stage. Avoid optimizing here since we need to
     // add the cache first, as detailed below.
@@ -348,8 +364,9 @@ std::unique_ptr<Pipeline, PipelineDeleter> DocumentSourceLookUp::buildPipeline(
     pipeline->optimizePipeline();
 
     if (!_cache->isServing()) {
+        writeUint8(36);
         // The cache has either been abandoned or has not yet been built. Attach a cursor.
-        pipeline = pExpCtx->mongoProcessInterface->attachCursorSourceToPipeline(
+        pipeline = _fromExpCtx->mongoProcessInterface->attachCursorSourceToPipeline(
             pipeline.release(), internalQueryAllowShardedLookup.load() /* allowTargetingShards*/);
     }
 
@@ -669,6 +686,15 @@ void DocumentSourceLookUp::resolveLetVariables(const Document& localDoc, Variabl
     for (auto& letVar : _letVariables) {
         auto value = letVar.expression->evaluate(localDoc, &pExpCtx->variables);
         variables->setConstantValue(letVar.id, value);
+        // writeUint8(0);
+        // std::stringstream ss;
+        std::cout << "resolveLetVariables: id: " << letVar.id << ", "
+                  << "name: " << letVar.name << ", "
+                  << "type: " << value.getType() << ", "
+                  << "toString: " << value.toString() << ", "
+                  << "this: " << this;
+        // writeString(ss.str());
+        // writeUint8(35);
     }
 }
 

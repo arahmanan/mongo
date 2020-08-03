@@ -123,12 +123,34 @@ void Variables::setConstantValue(Variables::Id id, const Value& value) {
     setValue(id, value, isConstant);
 }
 
+
+namespace {
+// TODO AR: remove
+void writeUint8(uint8_t num) {
+    std::cout.write(reinterpret_cast<char*>(&num), sizeof num);
+}
+void writeString(const std::string str) {
+    auto size = str.size();
+    std::cout.write(reinterpret_cast<char*>(&size), sizeof size);
+    std::cout << str;
+}
+}  // namespace
+
 Value Variables::getUserDefinedValue(Variables::Id id) const {
     invariant(isUserDefinedVariable(id));
 
     uassert(40434,
             str::stream() << "Requesting Variables::getValue with an out of range id: " << id,
             static_cast<size_t>(id) < _valueList.size());
+
+    // writeUint8(99);
+    // std::stringstream ss;
+    std::cout << "getUserDefinedValue: id: " << id << std::endl
+              << "_valueList.size(): " << _valueList.size() << std::endl
+              << "_valueList[varId]: " << _valueList[id].value << std::endl
+              << "this: " << this << std::endl;
+    // writeString(ss.str());
+
     return _valueList[id].value;
 }
 
